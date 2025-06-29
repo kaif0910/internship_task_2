@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat App</title>
+</head>
+<body>
+  <h2>Real-Time Chat</h2>
+  <input id="room" placeholder="Room name" />
+  <button onclick="joinRoom()">Join Room</button>
+  <div id="chat"></div>
+  <input id="message" placeholder="Message..." />
+  <button onclick="sendMessage()">Send</button>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    function joinRoom() {
+      const room = document.getElementById('room').value;
+      socket.emit('joinRoom', room);
+    }
+
+    function sendMessage() {
+      const room = document.getElementById('room').value;
+      const message = document.getElementById('message').value;
+      socket.emit('chatMessage', { room, message });
+    }
+
+    socket.on('message', msg => {
+      const chat = document.getElementById('chat');
+      const p = document.createElement('p');
+      p.innerText = msg;
+      chat.appendChild(p);
+    });
+  </script>
+</body>
+</html>
